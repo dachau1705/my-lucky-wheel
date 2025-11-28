@@ -13,7 +13,12 @@ export default function App() {
     { order: 2, name: "Giải Nhì", quantity: 2 },
     { order: 3, name: "Giải Nhất", quantity: 1 },
   ]);
-
+  const [currentPrizeName, setCurrentPrizeName] = useState(
+    prizes.find((p) => p.order === 1)?.name || ""
+  );
+  useEffect(() => {
+    setCurrentPrizeName(prizes.find((p) => p.order === 1)?.name || "");
+  }, [prizes]);
   const addPrize = () => {
     setPrizes([...prizes, { order: prizes.length + 1, name: "", quantity: 1 }]);
   };
@@ -35,9 +40,6 @@ export default function App() {
   useEffect(() => {
     setDigitCount(maxNumber.toString().length);
   }, [maxNumber]);
-  console.log("====================================");
-  console.log(digitCount);
-  console.log("====================================");
   // const digitCount = maxNumber.toString().length;
   const [slots, setSlots] = useState(Array(digitCount).fill(""));
   useEffect(() => {
@@ -55,6 +57,9 @@ export default function App() {
 
     const prize = prizes[currentPrizeIndex];
     if (!prize) return;
+
+    // 👉 Thêm dòng này
+    setCurrentPrizeName(prize.name);
 
     const existingCodes = Object.values(results).flat() || [];
     let finalCode = "";
@@ -102,6 +107,7 @@ export default function App() {
       }, 800 + index * 200);
     });
   };
+  console.log(currentPrizeName, 11111);
 
   const resetAll = () => {
     setScreen("setup");
@@ -254,10 +260,10 @@ export default function App() {
 
         <h1 style={{ textAlign: "center" }}>
           <span style={{ color: "red" }}>
-            {currentPrize?.name || "Đã hết giải"}
+            {currentPrizeName || "Đã hết giải"}
           </span>
         </h1>
-
+        {/* <div>{currentPrizeName}</div> */}
         <div
           style={{
             display: "flex",
@@ -287,7 +293,7 @@ export default function App() {
           ))}
         </div>
 
-        <div style={{ textAlign: "center" }}>
+        <div style={{ textAlign: "center", marginTop: "10px" }}>
           {currentPrize && (
             <button onClick={spin} disabled={spinning} style={buttonPrimary}>
               🎲 QUAY SỐ
